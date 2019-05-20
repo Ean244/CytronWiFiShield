@@ -119,6 +119,11 @@ public:
 	//int16_t ping(IPAddress ip);
 	//int16_t ping(char * server);
 		
+	/////////////////////
+	//  UDP  Commands  //
+	/////////////////////
+	bool udpConnect(const char * destination, uint16_t destinationPort, uint16_t localPort, uint16_t mode =0);
+	
 	//////////////////////////
 	// Custom GPIO Commands //
 	//////////////////////////

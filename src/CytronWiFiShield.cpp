@@ -818,6 +818,52 @@ int16_t ESP8266Class::ping(char * server)
 	return rsp;
 }
 */
+
+/////////////////////
+//  UDP  Commands  //
+/////////////////////
+bool ESP8266Class::udpConnect(const char * destination, uint16_t destinationPort, uint16_t localPort, uint16_t mode)
+{
+	//AT
+	_serial->write(0x41);_serial->write(0x54);
+	_serial->print((const __FlashStringHelper*)ESP8266_TCP_CONNECT);
+	//=
+	_serial->write(0x3d);
+	//"UDP","
+	_serial->write(0x22);_serial->write(0x55);_serial->write(0x44);_serial->write(0x50);_serial->write(0x22);_serial->write(0x2c);
+	//"
+	_serial->write(0x22);
+	_serial->print(destination);
+	//",
+	_serial->write(0x22);_serial->write(0x2c);
+	_serial->print(destinationPort);
+	//,
+	_serial->write(0x2c);
+	_serial->print(localPort);
+	//,
+	_serial->write(0x2c);
+	_serial->print(mode);
+	
+	//_serial->print(F("\r\n"));
+	_serial->write(0x0d);
+	_serial->write(0x0a);
+	
+	int16_t rsp = readForResponses(RESPONSE_OK, RESPONSE_ERROR, CLIENT_CONNECT_TIMEOUT);
+	
+	if (rsp <= 0)
+	{
+		// We may see "ERROR", but be "ALREADY CONNECTED".
+		// Search for "ALREADY", and return success if we see it.
+		char * p = searchBuffer("ALREADY");
+		if (p != NULL)
+			return true;
+		// Otherwise the connection failed. Continue the trials or return false:
+	} else  //return true successfully connected
+		return true;
+
+	return false;
+}
+
 //////////////////////////
 // Custom GPIO Commands //
 //////////////////////////
