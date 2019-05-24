@@ -864,6 +864,30 @@ bool ESP8266Class::udpConnect(const char * destination, uint16_t destinationPort
 	return false;
 }
 
+int16_t ESP8266Class::udpSend(const uint8_t *buf, size_t buf_size) {
+	if (buf_size > 2048)
+		return ESP8266_CMD_BAD;
+	
+	int16_t rsp;
+	char params[8] = {0};
+	sprintf(params, "%d", buf_size);
+	
+	sendCommand(ESP8266_TCP_SEND, ESP8266_CMD_SETUP, params);
+
+	rsp = readForResponses(RESPONSE_OK, RESPONSE_ERROR, COMMAND_RESPONSE_TIMEOUT);
+	if (rsp > 0)
+	{
+		_serial->print((const char*)buf);
+		
+		rsp = readForResponses(RESPONSE_OK, RESPONSE_FAIL, COMMAND_RESPONSE_TIMEOUT);
+		
+		if (rsp > 0)
+			return buf_size;
+		
+	}
+	return rsp;
+}
+
 //////////////////////////
 // Custom GPIO Commands //
 //////////////////////////

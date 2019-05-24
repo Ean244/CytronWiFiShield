@@ -123,6 +123,7 @@ public:
 	//  UDP  Commands  //
 	/////////////////////
 	bool udpConnect(const char * destination, uint16_t destinationPort, uint16_t localPort, uint16_t mode =0);
+	int16_t udpSend(const uint8_t *buf, size_t buf_size);
 	
 	//////////////////////////
 	// Custom GPIO Commands //
