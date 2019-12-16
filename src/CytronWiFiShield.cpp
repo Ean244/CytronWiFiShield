@@ -858,12 +858,7 @@ int16_t ESP8266Class::udpSend(const uint8_t *buf, size_t buf_size) {
     rsp = readForResponses(RESPONSE_OK, RESPONSE_ERROR, COMMAND_RESPONSE_TIMEOUT);
     if (rsp > 0) {
         _serial->print((const char *) buf);
-
-        rsp = readForResponses(RESPONSE_OK, RESPONSE_FAIL, COMMAND_RESPONSE_TIMEOUT);
-
-        if (rsp > 0)
-            return buf_size;
-
+        //no need to check for response, takes too long
     }
     return rsp;
 }
